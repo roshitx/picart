@@ -4,6 +4,7 @@ use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 
@@ -28,7 +29,11 @@ Route::middleware('auth')->group(function () {
 
     // ** GALLERY ** //
     Route::resource('gallery', GalleryController::class);
-    
+    Route::get('gallery/{slug}/download', [GalleryController::class, 'download'])->name('gallery.download');
+
+    // ** LIKE ** //
+    Route::post('gallery/{gallery}/like', [LikeController::class, 'like'])->name('like');
+
     // ** ADMINISTRATOR ** //
     Route::middleware('admin')->prefix('dashboard')->group(function () {
         // User Management

@@ -15,7 +15,6 @@
     <img src="{{ asset('storage/gallery') . '/' . $item->image }}" alt="{{ $item->title }}" class="rounded-4">
 </a>
 @endforeach
-
 <script>
     $(document).ready(function() {
         var elem = document.querySelector('.page-content');

@@ -20,8 +20,10 @@
                         <div class="dropdown me-3">
                             <button class="nav-link dropdown-toggle dropdown-toggle-nocaret" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class='bx bx-dots-vertical-rounded m-0 fs-3'></i></button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#"><i class='bx bxs-download align-middle'></i> Download</a></li>
+                                <li><a class="dropdown-item" href="{{ route('gallery.download', ['slug' => $gallery->slug]) }}" target="_blank"><i class='bx bxs-download align-middle'></i> Download</a></li>
+
                                 <li><button class="dropdown-item" data-clipboard-text="{{ route('gallery.show', ['gallery' => $gallery->slug]) }}" id="btnSharePost"><i class='bx bxs-share-alt align-middle'></i> Copy URL</button></li>
+
                                 @if(Auth::user()->id == $gallery->user_id)
                                 <li><button class="dropdown-item" type="button" id="buttonEditPost" data-id="{{ $gallery->id }}"><i class='bx bxs-edit-alt align-middle'></i> Edit</button></li>
                                 <li><a class="dropdown-item text-danger" type="button" id="btnDeletePhoto" data-id="{{ $gallery->id }}"><i class='bx bxs-trash-alt align-middle'></i> Delete</a></li>
@@ -113,17 +115,23 @@
                 <div class="row mt-3 bottom-0 sticky-bottom bg-white w-100">
                     <div class="border-top">
                         <div class="row mt-2">
-                            <div class="col-6 d-flex align-items-center">
-                                <p class="m-0"><i class='bx bxs-like'></i> 5 Like</p>
-                            </div>
-                            <div class="col-6 d-flex justify-content-end">
-                                <button class="btn btn-danger btn-sm">
-                                    <i class='bx bx-heart m-0'></i>
-                                </button>
+                            <div class="row flex-row justify-content-between align-items-center">
+                                <div class="col-auto fs-6">
+                                    <p class="m-0" id="likeCount"><i class='bx bxs-like'></i> {{ $gallery->likes->count() }} Likes</p>
+                                </div>
+                                <div class="col-auto fs-4">
+                                    <a href="#" class="text-decoration-none text-danger" id="likeButton" data-id="{{ $gallery->slug }}" data-user="{{ auth()->user()->id }}">
+                                        @if($isLiked == true)
+                                        <i class='bx bxs-heart m-0'></i>
+                                        @else
+                                        <i class='bx bx-heart m-0'></i>
+                                        @endif
+                                    </a>
+                                </div>
                             </div>
                             <div class="row flex-row align-items-center mt-3">
                                 <div class="col-auto">
-                                    <img src="{{ asset('storage/avatar') . '/' . @Auth::user()->profile->avatar }}" class="user-img">
+                                    <img src="{{ @Auth::user()->profile->avatar ? asset('storage/avatar') . '/' . Auth::user()->profile->avatar : $avatar }}" class="user-img">
                                 </div>
                                 <div class="col align-items-center">
                                     <div class="form-floating mb-3">
@@ -150,34 +158,34 @@
 
         $('#btnSharePost').click(function() {
             const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
+                toast: true
+                , position: "top-end"
+                , showConfirmButton: false
+                , timer: 3000
+                , timerProgressBar: true
+                , didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
                 }
             });
             Toast.fire({
-                icon: "success",
-                title: "Link copied to your clipboard"
+                icon: "success"
+                , title: "Link copied to your clipboard"
             });
         });
 
         $('#buttonEditPost').click(function() {
             let galleryId = $(this).data('id');
             $.ajax({
-                url: window.location.origin + '/gallery/' + galleryId + '/edit',
-                method: 'GET',
-                success: function(data) {
+                url: window.location.origin + '/gallery/' + galleryId + '/edit'
+                , method: 'GET'
+                , success: function(data) {
                     $('#modalEdit #title').val(data.title);
                     $('#modalEdit #description').val(data.description);
 
                     $('#modalEdit').modal('show');
-                },
-                error: function(error) {
+                }
+                , error: function(error) {
                     console.log(error);
                 }
             })
@@ -200,6 +208,46 @@
                     deleteForm.submit();
                 }
             });
+        });
+
+        $('#likeButton').click(function(e) {
+            e.preventDefault();
+            let userId = $(this).data('user');
+            let galleryId = $(this).data('id');
+            let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url: window.location.origin + '/gallery/' + galleryId + '/like'
+                , method: 'POST'
+                , data: {
+                    'user_id': userId
+                    , 'gallery_id': galleryId
+                    , '_token': CSRF_TOKEN
+                }
+                , success: function(response) {
+                    $('#likeCount').html(`<i class='bx bxs-like'></i> ${response.likeCount} Likes`);
+                    $('#likeButton').html(response.status == true ? `<i class='bx bxs-heart m-0'></i>` : `<i class='bx bx-heart m-0'></i>`);
+
+                    const Toast = Swal.mixin({
+                        toast: true
+                        , position: "top-end"
+                        , showConfirmButton: false
+                        , timer: 3000
+                        , timerProgressBar: true
+                        , didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: response.message
+                    });
+                }
+                , error: function(e) {
+                    console.error(e);
+                }
+            })
         });
     });
 

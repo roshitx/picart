@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\Like;
 use App\Models\Gallery;
 use Laravolt\Avatar\Avatar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class GalleryController extends Controller
 {
@@ -65,8 +67,20 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::whereSlug($slug)->first();
         $user = $gallery->user;
+        $auth = Auth::user()->id;
         $post_count = $user->galleries->count();
 
+        // Cek apakah auth user sudah pernah like / belum
+        $isLiked = Like::where('user_id', $auth)->where('gallery_id', $gallery->id)->first();
+        $statusLike = '';
+
+        if ($isLiked) {
+            $statusLike = true;
+        } else {
+            $statusLike = false;
+        }
+
+        // New avatar with avatar plugin
         $av = new Avatar();
 
         $avatar = $av->create($user->fullname);
@@ -74,7 +88,7 @@ class GalleryController extends Controller
             return abort(404);
         }
 
-        return view('gallery.detail', compact('gallery', 'post_count', 'avatar'));
+        return view('gallery.detail', compact('gallery', 'post_count', 'avatar', 'isLiked'));
     }
 
     /**
@@ -106,5 +120,22 @@ class GalleryController extends Controller
     {
         $gallery->delete();
         return redirect()->route('home')->with('success', 'Success deleted a post!');
+    }
+
+    public function download($slug)
+    {
+        $gallery = Gallery::where('slug', $slug)->first();
+        if ($gallery) {
+            $imagePath = 'gallery/' . $gallery->image;
+
+            if (Storage::exists($imagePath)) {
+                $newFilename = Carbon::now()->timestamp . '_picart_download.' . pathinfo($gallery->image, PATHINFO_EXTENSION);
+                return Storage::download($imagePath, $newFilename);
+            } else {
+                return response()->json(['error' => 'File not found.'], 404);
+            }
+        } else {
+            return response()->json(['error' => 'Post not found.'], 404);
+        }
     }
 }

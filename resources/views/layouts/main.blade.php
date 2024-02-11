@@ -5,6 +5,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!--favicon-->
     <link rel="icon" href="assets/images/favicon-32x32.png" type="image/png" />
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
@@ -55,15 +57,15 @@
         <div class="page-wrapper">
             <div class="page-content">
                 @yield('content')
-                <div class="page-load-status">
-                    <div class="loader-ellips infinite-scroll-request">
-                        <span class="loader-ellips__dot"></span>
-                        <span class="loader-ellips__dot"></span>
-                        <span class="loader-ellips__dot"></span>
-                        <span class="loader-ellips__dot"></span>
-                    </div>
-                    <p class="infinite-scroll-error">No more pages to load</p>
+            </div>
+            <div class="page-load-status">
+                <div class="loader-ellips infinite-scroll-request">
+                    <span class="loader-ellips__dot"></span>
+                    <span class="loader-ellips__dot"></span>
+                    <span class="loader-ellips__dot"></span>
+                    <span class="loader-ellips__dot"></span>
                 </div>
+                <p class="infinite-scroll-error">No more pages to load</p>
             </div>
         </div>
 

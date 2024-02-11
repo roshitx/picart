@@ -153,7 +153,9 @@
                             <p class="designattion mb-0">{{ $profile->bio ?? ' ' }}</p>
                         </div>
                         @else
-                        <button class="btn btn-primary"><i class='bx bx-log-in'></i> Login</button>
+                        <a href="{{ route('login') }}" role="button" class="fs-4 text-dark">
+                            <i class='bx bx-log-in'></i>
+                        </a>
                         @endif
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -171,11 +173,6 @@
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
-                        @else
-                        <li><a class="dropdown-item" href="{{ route('login') }}">
-                                <i class="bx bx-log-in-circle"></i>
-                                <span>Login</span></a>
-                        </li>
                         @endif
                     </ul>
                 </div>

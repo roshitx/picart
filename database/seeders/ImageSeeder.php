@@ -222,5 +222,54 @@ class ImageSeeder extends Seeder
             'description' => 'Lorem ipsum dolor sit amet',
             'image' => '31.jpg',
         ]);
+
+        Gallery::create([
+            'user_id' => 11,
+            'title' => 'Gambar 32',
+            'description' => 'Lorem ipsum dolor sit amet',
+            'image' => '32.jpg',
+        ]);
+
+        Gallery::create([
+            'user_id' => 11,
+            'title' => 'Gambar 33',
+            'description' => 'Lorem ipsum dolor sit amet',
+            'image' => '33.jpg',
+        ]);
+
+        Gallery::create([
+            'user_id' => 11,
+            'title' => 'Gambar 34',
+            'description' => 'Lorem ipsum dolor sit amet',
+            'image' => '34.jpg',
+        ]);
+
+        Gallery::create([
+            'user_id' => 11,
+            'title' => 'Gambar 35',
+            'description' => 'Lorem ipsum dolor sit amet',
+            'image' => '35.jpg',
+        ]);
+
+        Gallery::create([
+            'user_id' => 11,
+            'title' => 'Gambar 36',
+            'description' => 'Lorem ipsum dolor sit amet',
+            'image' => '36.jpg',
+        ]);
+
+        Gallery::create([
+            'user_id' => 11,
+            'title' => 'Gambar 37',
+            'description' => 'Lorem ipsum dolor sit amet',
+            'image' => '37.jpg',
+        ]);
+
+        Gallery::create([
+            'user_id' => 11,
+            'title' => 'Gambar 38',
+            'description' => 'Lorem ipsum dolor sit amet',
+            'image' => '38.jpg',
+        ]);
     }
 }
