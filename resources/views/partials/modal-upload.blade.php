@@ -19,11 +19,7 @@
                     <div class="mb-3">
                         <div class="row">
                             <label for="image-uploadify" class="form-label">Description</label>
-                            <div class="card">
-                                <div class="card-body">
-                                    <input id="image-uploadify" type="file" accept="image/*" name="image">
-                                </div>
-                            </div>
+                            <input id="image-uploadify" class="image-uploadify" type="file" accept="image/*" name="image">
                         </div>
                     </div>
                 </div>
@@ -36,8 +32,7 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#image-uploadify').imageuploadify();
-    });
-
+    // $(document).ready(function() {
+    //     $('.image-uploadify').imageUploader();
+    // });
 </script>

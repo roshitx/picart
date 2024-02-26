@@ -39,11 +39,11 @@
                                     <td class="text-center">
                                         <div class="d-flex items-center justify-content-center">
                                             <div class="btn-group">
-                                                <a href="{{ route('users.edit', $item->id) }}" class="btn btn-sm btn-warning text-light">
-                                                    <i class='bx bxs-edit'></i>
+                                                <a href="{{ route('users.edit', $item->id) }}" class="btn btn-sm btn-warning text-light" data-bs-hover="tooltip" data-bs-title="Edit user">
+                                                    <i class='bx bxs-edit m-0'></i>
                                                 </a>
-                                                <button type="button" class="btn btn-sm btn-danger btnDelete" data-id="{{ $item->id }}">
-                                                    <i class='bx bxs-trash'></i>
+                                                <button type="button" class="btn btn-sm btn-danger btnDelete" data-id="{{ $item->id }}" data-bs-hover="tooltip" data-bs-title="Delete user">
+                                                    <i class='bx bxs-trash m-0'></i>
                                                 </button>
                                                 <form action="{{ route('users.destroy', ['user' => $item->id]) }}" method="post" hidden class="deleteForm" data-id="{{ $item->id }}">
                                                     @csrf

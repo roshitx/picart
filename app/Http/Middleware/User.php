@@ -19,7 +19,7 @@ class User
         if (Auth::check() && Auth::user()->role === 'user') {
             return $next($request);
         } else {
-            abort(Response::HTTP_FORBIDDEN);
+            return back();
         }
     }
 }

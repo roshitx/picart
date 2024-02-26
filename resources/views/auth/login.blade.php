@@ -2,9 +2,8 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center mt-5">
+    <div class="row justify-content-center align-items-center">
         <div class="col-md-4">
-
             <div class="justify-content-center mb-2 d-flex align-items-center">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo SMK N 1 Bantul" width="60">
                 <span class="fs-4 fw-bold">Pic.Art</span>

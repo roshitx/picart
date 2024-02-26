@@ -3,6 +3,9 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center mt-5">
+        <div class="col-md-7 position-relative">
+            <img src="{{ asset('images/Preview Login Register.png') }}" width="90%" class="previewRegister">
+        </div>
         <div class="col-md-5">
             <div class="justify-content-center mb-2 d-flex align-items-center">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo SMK N 1 Bantul" width="60">

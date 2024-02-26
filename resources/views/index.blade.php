@@ -8,16 +8,21 @@
 <x-alert :message="session('fail')" :icon="'error'" />
 @endif
 
-<div class="grid-sizer"></div>
-<div class="gutter-sizer"></div>
-@foreach ($gallery as $item)
-<a class="grid-item" href="{{ route('gallery.show', $item->slug) }}">
-    <img src="{{ asset('storage/gallery') . '/' . $item->image }}" alt="{{ $item->title }}" class="rounded-4">
-</a>
-@endforeach
+<div class="d-flex justify-content-center">
+    <div class="container-gallery">
+        <div class="grid-sizer"></div>
+        <div class="gutter-sizer"></div>
+        @foreach ($gallery as $item)
+        <a class="grid-item" href="{{ route('gallery.show', $item->slug) }}">
+            <img src="{{ asset('storage/gallery') . '/' . $item->image }}" alt="{{ $item->title }}" class="rounded-4">
+        </a>
+        @endforeach
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
-        var elem = document.querySelector('.page-content');
+        var elem = document.querySelector('.container-gallery');
         let $grid = $(elem);
 
         $grid.masonry({
@@ -46,5 +51,6 @@
             }
         );
     });
+
 </script>
 @endsection

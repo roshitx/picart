@@ -18,7 +18,8 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        //
+        $gallery = Gallery::all();
+        return view('gallery.index', compact('gallery'));
     }
 
     /**
@@ -65,7 +66,7 @@ class GalleryController extends Controller
      */
     public function show($slug)
     {
-        $gallery = Gallery::whereSlug($slug)->first();
+        $gallery = Gallery::whereSlug($slug)->with('likes')->first();
         $user = $gallery->user;
         $auth = Auth::user()->id;
         $post_count = $user->galleries->count();
@@ -110,7 +111,7 @@ class GalleryController extends Controller
         ]);
 
         $gallery->update($validate);
-        return redirect()->back()->with('success', 'Success updated a post!');
+        return redirect()->route('gallery.show', $gallery->slug)->with('success', 'Success updated a post!');
     }
 
     /**
@@ -129,7 +130,7 @@ class GalleryController extends Controller
             $imagePath = 'gallery/' . $gallery->image;
 
             if (Storage::exists($imagePath)) {
-                $newFilename = Carbon::now()->timestamp . '_picart_download.' . pathinfo($gallery->image, PATHINFO_EXTENSION);
+                $newFilename = $gallery->title . 'picart.' . pathinfo($gallery->image, PATHINFO_EXTENSION);
                 return Storage::download($imagePath, $newFilename);
             } else {
                 return response()->json(['error' => 'File not found.'], 404);
@@ -137,5 +138,23 @@ class GalleryController extends Controller
         } else {
             return response()->json(['error' => 'Post not found.'], 404);
         }
+    }
+
+    public function banned($slug)
+    {
+        $gallery = Gallery::whereSlug($slug)->first();
+
+        if ($gallery->isBan == 0)
+        {
+            $gallery->update([
+                'isBan' => 1
+            ]);
+        } else {
+            $gallery->update([
+                'isBan' => 0
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Successfully banned the post');
     }
 }

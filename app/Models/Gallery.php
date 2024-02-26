@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Gallery extends Model
 {
@@ -18,7 +18,8 @@ class Gallery extends Model
     {
         return [
             'slug' => [
-                'source' => 'title'
+                'source' => 'title',
+                'onUpdate' => true,
             ]
         ];
     }
@@ -31,5 +32,10 @@ class Gallery extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }

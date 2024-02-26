@@ -22,17 +22,20 @@
                                 <h4>{{ $user->fullname }}</h4>
                                 <h6 class="text-secondary mb-1">{{ $user->profile->bio ?? '' }}</h6>
                                 <p class="text-muted font-size-sm">{{ $user->profile->description ?? '' }}</p>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#social_link"><i class='bx bx-link m-0'></i></button>
+                                <hr>
+                                <small class="text-secondary d-block mb-1">Add or delete social link</small>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#social_link" data-bs-hover="tooltip" data-bs-title="Add social link"><i class='bx bx-link m-0'></i></button>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#social_link_delete" data-bs-hover="tooltip" data-bs-title="Delete existing social link"><i class='bx bx-trash m-0'></i></button>
                             </div>
                         </div>
-                        @if ($user->social_links)
+                        @if ($user->social_links && count($user->social_links) > 0)
                         <hr class="my-4" />
                         @foreach ($user->social_links as $social_link)
-                        <a href="{{ $social_link->link }}" target="_blank">
+                        <a href="{{ $social_link->link }}" target="_blank" data-bs-hover="tooltip" data-bs-title="{{ $social_link->link }}">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                     <h6 class="mb-0">{{ ucfirst($social_link->social_network) }}</h6>
-                                    <span class="text-secondary link-underline-primary">{{ $social_link->username ? $social_link->username : $social_link->link }}</span>
+                                    <span class="text-primary text-decoration-underline">{{ $social_link->username ? $social_link->username : $social_link->link }}</span>
                                 </li>
                             </ul>
                         </a>
@@ -40,7 +43,7 @@
                         @endif
                     </div>
 
-                    <div class="modal fade" id="social_link" tabindex="-1" aria-labelledby="social_linkLabel" aria-hidden="true">
+                    <div class="modal fade" id="social_link" tabindex="-1" aria-labelledby="social_linkLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -49,26 +52,26 @@
                                 </div>
                                 <form action="{{ route('add.social-link') }}" method="POST">
                                     <div class="modal-body">
-                                            @csrf
-                                            <div class="row">
-                                                <div class="col-lg-4 col-12 mt-3">
-                                                    <label for="social_network">Social Media Type <span class="text-danger">*</span></label>
-                                                    <select name="social_network" id="social_network" class="form-select">
-                                                        @foreach ($socmed as $title => $value)
-                                                            <option value="{{ $value }}">{{ $title }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-4 col-12 mt-3">
-                                                    <label for="username">Username</label>
-                                                    <input type="text" name="username" id="username" class="form-control">
-                                                </div>
-                                                <div class="col-lg-4 col-12 mt-3">
-                                                    <label for="social_network">URL <span class="text-danger">*</span></label>
-                                                    <input type="text" name="link" id="link" class="form-control">
-                                                </div>
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-lg-4 col-12 mt-3">
+                                                <label for="social_network">Social Media Type <span class="text-danger">*</span></label>
+                                                <select name="social_network" id="social_network" class="form-select">
+                                                    @foreach ($socmed as $title => $value)
+                                                    <option value="{{ $value }}">{{ $title }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-4 col-12 mt-3">
+                                                <label for="username">Username</label>
+                                                <input type="text" name="username" id="username" class="form-control">
+                                            </div>
+                                            <div class="col-lg-4 col-12 mt-3">
+                                                <label for="social_network">URL <span class="text-danger">*</span></label>
+                                                <input type="text" name="link" id="link" class="form-control">
                                             </div>
                                         </div>
+                                    </div>
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-primary">Save</button>
                                     </div>
@@ -77,6 +80,49 @@
                         </div>
                     </div>
 
+                    <div class="modal fade" id="social_link_delete" tabindex="-1" aria-labelledby="social_link_deleteLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="social_link_deleteLabel">Delete Existing Social Link</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    @csrf
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Social Network</th>
+                                                <th>Username</th>
+                                                <th>URL</th>
+                                                <th class="text-danger"><i class='bx bxs-trash'></i></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($user->social_links as $social_link)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ ucfirst($social_link->social_network) }}</td>
+                                                <td>{{ $social_link->username ?? '-' }}</td>
+                                                <td>{{ $social_link->link }}</td>
+                                                <td>
+                                                    <button class="btn-danger btn btn-sm btnDeleteLink" data-link="{{ $social_link->id }}">
+                                                        <i class='bx bxs-trash m-0'></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <form action="{{ route('delete.social-link', $social_link->id) }}" method="POST" class="deleteForm" hidden data-link="{{ $social_link->id }}">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-8">
@@ -212,35 +258,6 @@
                         </div>
                     </form>
                 </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="d-flex align-items-center mb-3">Project Status</h5>
-                                <p>Web Design</p>
-                                <div class="progress mb-3" style="height: 5px">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p>Website Markup</p>
-                                <div class="progress mb-3" style="height: 5px">
-                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p>One Page</p>
-                                <div class="progress mb-3" style="height: 5px">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p>Mobile Template</p>
-                                <div class="progress mb-3" style="height: 5px">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p>Backend API</p>
-                                <div class="progress" style="height: 5px">
-                                    <div class="progress-bar bg-info" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -248,9 +265,29 @@
 <script>
     $(document).ready(function() {
         $('#social_network').select2({
-            theme: "bootstrap-5",
+            theme: "bootstrap-5"
+        , });
+        // Delete Social Link
+        $('.btnDeleteLink').click(function() {
+            const itemId = $(this).data('link');
+            Swal.fire({
+                title: 'Are you sure?'
+                , text: "You can't revert this action!"
+                , icon: 'warning'
+                , showCancelButton: true
+                , confirmButtonColor: '#3085d6'
+                , cancelButtonColor: '#d33'
+                , confirmButtonText: 'Yes, delete!'
+                , cancelButtonText: 'No, cancel!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const deleteForm = $(`.deleteForm[data-link="${itemId}"]`);
+                    deleteForm.submit();
+                }
+            });
         });
 
+        // Avatar javascript
         let outputImage = $('.outputImage');
         @if($user->profile->avatar ?? null)
         outputImage.html(`

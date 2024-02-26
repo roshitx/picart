@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Gallery;
 use App\Models\Profile;
 use App\Models\SocialLink;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+    public function show($username)
+    {
+        $user = User::where('username', $username)->first();
+        $gallery = Gallery::where('user_id', $user->id)->orderBy('created_at', 'DESC')->paginate(10);
+
+        return view('profile.show', compact('user', 'gallery'));
+    }
+
     public function index()
     {
         $user = User::where('id', Auth::user()->id)->first();
@@ -90,8 +99,7 @@ class ProfileController extends Controller
 
         $user->save();
         $profile->save();
-
-        return redirect()->route('profile')->with('success', 'Profile updated successfully');
+        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully');
     }
 
     public function social_link(Request $request)
@@ -100,12 +108,19 @@ class ProfileController extends Controller
         $validate = $request->validate([
             'social_network' => 'string|required',
             'link' => 'string|required|url:https',
-            'username' => 'string|required',
+            'username' => 'string|nullable',
         ]);
 
         $validate['user_id'] = $userId;
 
         SocialLink::create($validate);
         return redirect()->route('profile')->with('success', 'Successfully add new social link!');
+    }
+
+    public function social_link_delete($id)
+    {
+        $social_link = SocialLink::where('id', $id)->first();
+        $social_link->delete();
+        return redirect()->back()->with('success', 'Successfully deleted social link');
     }
 }

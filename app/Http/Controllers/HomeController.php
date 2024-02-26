@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $gallery = Gallery::paginate(10);
+        $gallery = Gallery::orderBy('created_at', 'DESC')->paginate(10);
 
         abort_if($gallery->isEmpty(), 204);
 
