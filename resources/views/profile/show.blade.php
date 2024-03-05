@@ -67,24 +67,24 @@
         let $grid = $(elem);
 
         $grid.masonry({
-            itemSelector: '.grid-item'
-            , gutter: '.gutter-sizer'
-            , columnWidth: '.grid-sizer'
-            , fitWidth: true
-        , });
+            itemSelector: '.grid-item',
+            gutter: '.gutter-sizer',
+            columnWidth: '.grid-sizer',
+            fitWidth: true,
+        });
 
         // get Masonry instance
         let msnry = $grid.data('masonry');
 
         $(elem).infiniteScroll({
                 // options
-                path: '?page=@{{#}}'
-                , append: '.grid-item'
-                , history: false
-                , outlayer: msnry
-                , status: '.page-load-status'
-            , }
-            , function(newElements) {
+                path: '?page=@{{#}}',
+                append: '.grid-item',
+                history: false,
+                outlayer: msnry,
+                status: '.page-load-status',
+             },
+             function(newElements) {
                 var $newElems = $(newElements).hide().imagesLoaded(function() {
                     $newElems.show();
                     $grid.masonry('appended', $newElems);

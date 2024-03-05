@@ -18,7 +18,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="row">
-                            <label for="image-uploadify" class="form-label">Description</label>
+                            <label for="image-uploadify" class="form-label">Upload Foto</label>
                             <input id="image-uploadify" class="image-uploadify" type="file" accept="image/*" name="image">
                         </div>
                     </div>

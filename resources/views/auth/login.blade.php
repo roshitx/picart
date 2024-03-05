@@ -28,16 +28,10 @@
                         <div class="form-floating mb-3 col-12">
                             <input type="email" class="form-control @error('email') is-invalid @enderror" id="floatingInput" placeholder=" " name="email">
                             <label for="floatingInput">Email address</label>
-                            @error('email')
-                                <span class="text-sm">{{ $messages }}</span>
-                            @enderror
                         </div>
                         <div class="form-floating col-12">
                             <input type="password" class="form-control @error('password') is-invalid @enderror" id="floatingPassword" placeholder=" " name="password">
                             <label for="floatingPassword">Password</label>
-                            @error('email')
-                                <span class="text-sm">{{ $messages }}</span>
-                            @enderror
                         </div>
 
                         <div class="col-12">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -89,5 +90,23 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->back()->with('success', 'Successfully deleted new user');
+    }
+
+    // Call Stored Procedure
+    public function storeProcedure()
+    {
+        $user = DB::unprepared('CALL GetUsers');
+
+        return response()->json($user);
+    }
+
+    // Call SQL function get user by id
+    public function getUserById($id)
+    {
+        $username = DB::unprepared('SELECT get_username(?)', [$id]);
+
+        return response()->json([
+            'username' => $username[0],
+        ]);
     }
 }
